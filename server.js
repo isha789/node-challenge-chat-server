@@ -1,24 +1,32 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require('body-parser');
+const path = require('path');
+
+const messagesHandler = require('./routes/messages')
+
 
 const app = express();
 
 app.use(cors());
 
-const welcomeMessage = {
-  id: 0,
-  from: "Bart",
-  text: "Welcome to CYF chat system!",
-};
+app.use(bodyParser.urlencoded({ extended: true}))
 
-//This array is our "data store".
-//We will start with one message in the array.
-//Note: messages will be lost when Glitch restarts our server.
-const messages = [welcomeMessage];
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/messages', messagesHandler)
+
+
+
 
 app.get("/", function (request, response) {
   response.sendFile(__dirname + "/index.html");
 });
+
+// app.get("/favicon.ico", (request, response) => {
+//   response.sendStatus(501)
+// })
+
+
 
 app.listen(3000, () => {
    console.log("Listening on port 3000")
